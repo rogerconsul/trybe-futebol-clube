@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import teamService from '../services/teamSercice';
+import teamService from '../services/teamService';
 
 const teamController = {
   async getAll(req: Request, res: Response) {

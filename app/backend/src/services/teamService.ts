@@ -2,7 +2,10 @@ import Team from '../database/models/TeamModel';
 
 type ReqResult = {
   status: number;
-  message: string | Team[] | Team;
+  message: string | Team[] | Team | {
+    id: number;
+    teamName: string;
+  }[];
 };
 
 const teamService = {
