@@ -7,6 +7,7 @@ const secret = process.env.JWT_SECRET || 'ChatubaDeMesquita';
 type ReqResult = {
   status: number;
   message: string | User | { token: string } | { message: string };
+  payload?: User | undefined | null;
 };
 
 const userService = {
@@ -16,7 +17,7 @@ const userService = {
       return { status: 401, message: { message: 'Incorrect email or password' } };
     }
     const token: string = sign({ data: result }, secret);
-    return { status: 200, message: { token } };
+    return { status: 200, message: { token }, payload: result };
   },
 };
 
