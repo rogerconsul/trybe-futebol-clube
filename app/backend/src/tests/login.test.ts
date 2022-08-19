@@ -18,11 +18,6 @@ const validUser = {
   password: 'oJardineiroEhJesus'
 };
 
-const notFoundUser = {
-  email: 'roger@roger.com.br',
-  password: 'oJardineiroEhJesus'
-}
-
 const invalidEmail = {
   email: 'email',
   password: 'oJardineiroEhJesus'
@@ -103,7 +98,28 @@ describe('Testa as funcionalidades do loginService que esta dentro de user', () 
           expect(res).to.have.status(400);
           expect(res).to.be.an('object')
         })
+  });
 
+  it('Testa /login com senha faltante', async () => {
+    chaiHttpResponse = await chai
+       .request(app)
+       .post('/login')
+       .send(missingPassword)
+       .then(function (res) {
+          expect(res).to.have.status(400);
+          expect(res).to.be.an('object')
+        })
+  });
+
+  it('Testa /login com email invalido', async () => {
+    chaiHttpResponse = await chai
+       .request(app)
+       .post('/login')
+       .send(invalidEmail)
+       .then(function (res) {
+          expect(res).to.have.status(401);
+          expect(res).to.be.an('object')
+        })
   });
 
 });

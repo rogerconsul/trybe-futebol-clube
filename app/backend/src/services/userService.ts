@@ -13,7 +13,7 @@ const userService = {
   async loginUser(email: string): Promise<ReqResult> {
     const result = await User.findOne({ where: { email } });
     if (!result) {
-      return { status: 404, message: 'User not found' };
+      return { status: 401, message: 'User not found' };
     }
     const token: string = sign({ data: result }, secret);
     return { status: 200, message: { token } };
