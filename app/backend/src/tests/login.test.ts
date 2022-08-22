@@ -8,6 +8,7 @@ import { app } from '../app';
 import { Response } from 'superagent';
 import loginController from '../controllers/loginController';
 import userService from '../services/userService';
+import { request } from 'chai';
 
 chai.use(chaiHttp);
 
@@ -62,6 +63,7 @@ describe('Testa as funcionalidades do LoginController', () => {
 
     expect(chaiHttpResponse.status).not.to.equal(404);
   });
+  
   
 });
 
@@ -123,3 +125,17 @@ describe('Testa as funcionalidades do loginService que esta dentro de user', () 
   // });
 
 });
+
+describe('Testa o login sem mocks', () => {
+  let chaiHttpResponse: Response | void;
+
+  it('Verifica login/validate enviando senha incorreta', async () => {
+    chaiHttpResponse = await chai
+      .request(app)
+      .get('/login/validate')
+      .send({authorization: 'xablau'})
+      .then(function (res) {
+        expect(res).to.has.status(500)
+      })
+  })
+})
