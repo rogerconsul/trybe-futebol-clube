@@ -1,4 +1,5 @@
-import { sign } from 'jsonwebtoken';
+import { verify, sign } from 'jsonwebtoken';
+import { ipayload } from '../interfaces';
 import User from '../database/models/UserModel';
 import 'dotenv/config';
 
@@ -16,8 +17,12 @@ const userService = {
     if (!result) {
       return { status: 401, message: { message: 'Incorrect email or password' } };
     }
-    const token: string = sign({ data: result }, secret);
+    const token: string = sign({ result }, secret);
     return { status: 200, message: { token }, payload: result };
+  },
+  async validateUser(token: string): Promise<ipayload> {
+    const decode = await verify(token, secret);
+    return decode as ipayload;
   },
 };
 

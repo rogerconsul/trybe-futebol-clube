@@ -22,6 +22,17 @@ const loginController = {
     }
     res.status(result.status).json(result.message);
   },
+  async loginValidate(req: Request, res: Response) {
+    const { authorization } = req.headers;
+    if (!authorization) {
+      return res.status(500).json({ message: 'xablau estamos aqui' });
+    }
+    const validate = await userService.validateUser(authorization);
+    if (validate) {
+      return res.status(200).json({ role: validate.result.role });
+    }
+    return res.status(404).json({ message: 'User not found' });
+  },
 };
 
 export default loginController;
