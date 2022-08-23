@@ -1,9 +1,21 @@
 // import QueryString = require('qs');
+import Team from '../database/models/TeamModel';
 import Match from '../database/models/MatchModel';
 
 const teamService = {
   async getAll() {
-    const result = await Match.findAll();
+    const result = await Match.findAll({
+      include: [{
+        model: Team,
+        as: 'teamHome',
+        attributes: { exclude: ['id'] },
+      },
+      {
+        model: Team,
+        as: 'teamAway',
+        attributes: { exclude: ['id'] },
+      },
+      ] });
     if (!result) {
       return { status: 500, message: [] };
     }
