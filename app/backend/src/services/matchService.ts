@@ -21,6 +21,21 @@ const teamService = {
     }
     return { status: 200, message: result };
   },
+  async create(payload: Match) {
+    try {
+      const { homeTeam, awayTeam, homeTeamGoals, awayTeamGoals } = payload;
+      const process = await Match.create({
+        homeTeam,
+        homeTeamGoals,
+        awayTeam,
+        awayTeamGoals,
+        inProgress: true,
+      });
+      return process;
+    } catch (error) {
+      console.log(error);
+    }
+  },
   // async searchByQuery(query: string | QueryString.ParsedQs | string[] | QueryString.ParsedQs[])
   //   : Promise<Match[]> {
   //   const result = await Match.findAll({ where: { query: true } });

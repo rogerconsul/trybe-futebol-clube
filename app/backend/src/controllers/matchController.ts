@@ -19,6 +19,18 @@ const matchController = {
     // }
     return res.status(result.status).json(result.message);
   },
+  async createMatch(req: Request, res: Response) {
+    const payload = req.body;
+    if (payload.homeTeam) {
+      const link = await matchService.create(payload);
+      return res.status(201).json(link);
+    }
+    return res.status(404).json({ message: 'Solicitação inválida e/ou faltando dados' });
+    // const send = await matchService.create(payload);
+    // if (!send) {
+    //   res.status(500).json('Algo ruim');
+    // } FALTA VERIFICAR O PAYLOAD ALI EM CIMA
+  },
 };
 
 export default matchController;
