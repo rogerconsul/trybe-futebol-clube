@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import Match from '../database/models/MatchModel';
 import matchService from '../services/matchService';
+import teamService from '../services/teamService';
 
 const matchController = {
   async getAll(req: Request, res: Response) {
@@ -22,6 +23,18 @@ const matchController = {
   async createMatch(req: Request, res: Response) {
     const payload = req.body;
     if (payload.homeTeam) {
+      if (payload.homeTeam === payload.awayTeam) {
+        return res.status(401)
+          .json({ message: 'It is not possible to create a match with two equal teams' });
+      }
+      const verifyExistingTeam1 = await teamService
+        .getById(payload.homeTeam);
+      const verifyExistingTeam2 = await teamService
+        .getById(payload.awayTeam);
+
+      if (verifyExistingTeam1.status === 404 || verifyExistingTeam2.status === 404) {
+        return res.status(404).json({ message: 'There is no team with such id!' });
+      }
       const link = await matchService.create(payload);
       return res.status(201).json(link);
     }
@@ -31,6 +44,11 @@ const matchController = {
     //   res.status(500).json('Algo ruim');
     // } FALTA VERIFICAR O PAYLOAD ALI EM CIMA
   },
+  async updateMatch(req: Request, res: Response) {
+    const { id } = req.params;
+    const numberfy = Number(id);
+    await matchService.updateMatch(numberfy);
+    res.status(200).json({ message: 'Finished' });
+  },
 };
-
 export default matchController;

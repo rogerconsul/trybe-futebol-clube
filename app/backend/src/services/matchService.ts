@@ -36,6 +36,13 @@ const teamService = {
       console.log(error);
     }
   },
+  async updateMatch(id: number) {
+    const update = await Match.update(
+      { inProgress: false },
+      { where: { id } },
+    );
+    return update;
+  },
   // async searchByQuery(query: string | QueryString.ParsedQs | string[] | QueryString.ParsedQs[])
   //   : Promise<Match[]> {
   //   const result = await Match.findAll({ where: { query: true } });
