@@ -50,5 +50,16 @@ const matchController = {
     await matchService.updateMatch(numberfy);
     res.status(200).json({ message: 'Finished' });
   },
+  async updateMatchProgress(req: Request, res: Response) {
+    const { id } = req.params;
+    const numberfy = Number(id);
+    const { homeTeamGoals, awayTeamGoals } = req.body;
+    const payload = {
+      homeTeamGoals,
+      awayTeamGoals,
+    };
+    await matchService.updateMatchProgress(numberfy, payload);
+    res.status(200).json(payload);
+  },
 };
 export default matchController;

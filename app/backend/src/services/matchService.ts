@@ -1,6 +1,7 @@
 // import QueryString = require('qs');
 import Team from '../database/models/TeamModel';
 import Match from '../database/models/MatchModel';
+import { iReqBodyMatch } from '../interfaces';
 
 const teamService = {
   async getAll() {
@@ -39,6 +40,14 @@ const teamService = {
   async updateMatch(id: number) {
     const update = await Match.update(
       { inProgress: false },
+      { where: { id } },
+    );
+    return update;
+  },
+  async updateMatchProgress(id: number, payload: iReqBodyMatch) {
+    const { homeTeamGoals, awayTeamGoals } = payload;
+    const update = await Match.update(
+      { homeTeamGoals, awayTeamGoals },
       { where: { id } },
     );
     return update;
