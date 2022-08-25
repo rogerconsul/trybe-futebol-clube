@@ -73,23 +73,6 @@ const organizador = (array: tempObject[]) => array.sort(
       || b.goalsFavor - a.goalsFavor
       || a.goalsOwn - b.goalsOwn,
 );
-// if ((a.totalPoints > b.totalPoints) {return -1})
-// if ((a.totalVictories < b.totalVictories) {return 1})
-// if ((a.totalVictories > b.totalVictories) {return -1})
-
-// (
-//   (a.totalPoints < b.totalPoints) ? 1 : -1));
-// // console.log(first);
-// const second = first.sort((a: tempObject, b: tempObject) => (
-//   (a.totalVictories < b.totalVictories) ? 0 : -1));
-// // // console.log(second);
-// const third = second.sort((a: tempObject, b: tempObject) => (
-//   (a.goalsBalance < b.goalsBalance) ? 0 : -1));
-// // // console.log(third);
-// // const fourth = third.sort((a: tempObject, b: tempObject) => (
-// //   (a.goalsOwn > b.goalsOwn) ? 1 : -1));
-// return third;
-// };
 
 const leaderboardController = {
   async generateLeaderboardHome(_req: Request, res: Response) {
