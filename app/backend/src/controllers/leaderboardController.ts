@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Team from '../database/models/TeamModel';
 import matchService from '../services/matchService';
-import { whoWon, aproveitamento, saldoGols } from '../utils/leaderboardsUtils';
+import { whoWon, aproveitamento } from '../utils/leaderboardsUtils';
 import { tempObject } from '../interfaces';
 
 let temp = {
@@ -14,21 +14,22 @@ let temp = {
   goalsFavor: 0,
   goalsOwn: 0,
   goalsBalance: 0,
-  efficiency: 0,
+  efficiency: '0',
 };
 let leaderBoard: tempObject[] = [];
 
 const usingWhoWon = async (gp: number, gc: number) => {
-  const who = await whoWon(gp, gc);
+  const who = whoWon(gp, gc);
+  temp.goalsFavor += gp;
+  temp.goalsOwn += gc;
+  temp.goalsBalance += (gp - gc);
   switch (who) {
     case 'home': {
       temp.totalVictories += 1;
       temp.totalPoints += 3;
       break;
     }
-    case 'away': {
-      temp.totalLosses += 1;
-      temp.totalPoints += 0;
+    case 'away': { temp.totalLosses += 1;
       break;
     }
     default: {
@@ -49,24 +50,46 @@ const reset = () => {
     goalsFavor: 0,
     goalsOwn: 0,
     goalsBalance: 0,
-    efficiency: 0,
+    efficiency: '0',
   };
 };
 
-const organizador = (array: tempObject[]) => {
-  const first = array.sort((a: tempObject, b: tempObject) => {
-    if (b.totalPoints > a.totalPoints) return 1;
-    if (b.totalPoints < a.totalPoints) return -1;
-    if (b.goalsBalance > a.goalsBalance) return 1;
-    if (b.goalsBalance < a.goalsBalance) return -1;
-    if (b.goalsFavor > a.goalsFavor) return 1;
-    if (b.goalsFavor < a.goalsFavor) return -1;
-    if (b.goalsOwn > a.goalsOwn) return 1;
-    if (b.goalsOwn < a.goalsOwn) return -1;
-    return 0;
-  });
-  return first;
-};
+// const organizador = (array: tempObject[]) => {
+//   const first = array.sort((a: tempObject, b: tempObject) => {
+//     (a.totalPoints < b.totalPoints) ? 1 : -1;
+//     (a.totalVictories < b.totalVictories) ? 1 : -1;
+//     (a.goalsBalance < b.goalsBalance) ? 1 : -1;
+//     (a.goalsFavor < b.goalsFavor) ? 1 : -1;
+//     (a.goalsOwn < b.goalsOwn) ? 1 : -1;
+//     return 0;
+//   });
+//   return first;
+// };
+const organizador = (array: tempObject[]) => array.sort(
+  (a, b) =>
+    b.totalPoints - a.totalPoints
+      || b.totalVictories - a.totalVictories
+      || b.goalsBalance - a.goalsBalance
+      || b.goalsFavor - a.goalsFavor
+      || a.goalsOwn - b.goalsOwn,
+);
+// if ((a.totalPoints > b.totalPoints) {return -1})
+// if ((a.totalVictories < b.totalVictories) {return 1})
+// if ((a.totalVictories > b.totalVictories) {return -1})
+
+// (
+//   (a.totalPoints < b.totalPoints) ? 1 : -1));
+// // console.log(first);
+// const second = first.sort((a: tempObject, b: tempObject) => (
+//   (a.totalVictories < b.totalVictories) ? 0 : -1));
+// // // console.log(second);
+// const third = second.sort((a: tempObject, b: tempObject) => (
+//   (a.goalsBalance < b.goalsBalance) ? 0 : -1));
+// // // console.log(third);
+// // const fourth = third.sort((a: tempObject, b: tempObject) => (
+// //   (a.goalsOwn > b.goalsOwn) ? 1 : -1));
+// return third;
+// };
 
 const leaderboardController = {
   async generateLeaderboardHome(_req: Request, res: Response) {
@@ -77,11 +100,8 @@ const leaderboardController = {
       temp.totalGames = matchesTheTeamPlayedAsHome.length;
       matchesTheTeamPlayedAsHome.forEach(async (match) => {
         await usingWhoWon(match.homeTeamGoals, match.awayTeamGoals);
-        temp.goalsFavor += match.homeTeamGoals;
-        temp.goalsOwn += match.awayTeamGoals;
-        temp.goalsBalance += saldoGols(match.homeTeamGoals, match.awayTeamGoals);
       });
-      temp.efficiency = parseFloat(aproveitamento(temp.totalPoints, temp.totalGames).toFixed(2));
+      temp.efficiency = aproveitamento(temp.totalPoints, temp.totalGames).toFixed(2);
       leaderBoard.push(temp);
       reset();
     });
