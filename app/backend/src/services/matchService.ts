@@ -52,6 +52,12 @@ const teamService = {
     );
     return update;
   },
+  async getByHomeTeamId(id: number) {
+    const search = await Match.findAll({
+      where: { homeTeam: id, inProgress: false },
+    });
+    return search;
+  },
   // async searchByQuery(query: string | QueryString.ParsedQs | string[] | QueryString.ParsedQs[])
   //   : Promise<Match[]> {
   //   const result = await Match.findAll({ where: { query: true } });

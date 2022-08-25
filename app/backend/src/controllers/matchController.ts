@@ -14,10 +14,6 @@ const matchController = {
         .filter((match: Match) => match.inProgress === verify);
       return res.status(result.status).json(filtered);
     }
-    // if (inProgress !== undefined) {
-    //   const result = await matchService.searchByQuery(inProgress);
-    //   return res.status(result.status).json(req.query);
-    // }
     return res.status(result.status).json(result.message);
   },
   async createMatch(req: Request, res: Response) {
@@ -39,10 +35,6 @@ const matchController = {
       return res.status(201).json(link);
     }
     return res.status(404).json({ message: 'Solicitação inválida e/ou faltando dados' });
-    // const send = await matchService.create(payload);
-    // if (!send) {
-    //   res.status(500).json('Algo ruim');
-    // } FALTA VERIFICAR O PAYLOAD ALI EM CIMA
   },
   async updateMatch(req: Request, res: Response) {
     const { id } = req.params;

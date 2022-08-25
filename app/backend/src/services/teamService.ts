@@ -9,7 +9,7 @@ type ReqResult = {
 };
 
 const teamService = {
-  async getAll(): Promise<ReqResult> {
+  async getAll() { // tirei o promise reqResult
     const result = await Team.findAll();
     if (!result) {
       return { status: 500, message: 'Deu ruim no getAll dos Teams' };
